@@ -1,9 +1,7 @@
 import React from 'react';
-import Head from 'next/head';
 import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Link from '../components/Link';
-import { Button, InputLabel, Input, FormHelperText, FormControl, Grid, Paper } from '@material-ui/core';
+import { Button, Grid, Paper } from '@material-ui/core';
 import ValidatorClient from 'nym-validator-client';
 import MainNav from '../components/MainNav';
 
@@ -50,7 +48,13 @@ const Unbond = () => {
 
     const unbond = async () => {
         console.log(`UNBONDING button pressed`);
-        const result = await ipcRenderer.invoke("unbond");
+        const client = await ValidatorClient.connect(
+            "nym18vd8fpwxzck93qlwghaj6arh4p7c5n8974s0uv",
+            "pride moral airport someone involve rabbit else napkin cheese hello tent stove rabbit mean help small ship embark concert aim journey void fly output",
+            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
+        );
+        console.log(`connected to validator, our address is ${client.address}`);
+        const result = await client.unbond();
         console.log("Unbonding result", result);
     }
 

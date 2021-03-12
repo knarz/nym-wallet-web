@@ -43,7 +43,7 @@ export default function MainNav() {
 
     return (
         <React.Fragment>
-            <CssBaseline />
+            {/* <CssBaseline /> */}
             <AppBar position="absolute" color="default" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" color="inherit" noWrap>

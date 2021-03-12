@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Grid, Paper, TextField } from '@material-ui/core';
 import { MixNode } from 'nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
+import ValidatorClient from 'nym-validator-client';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,7 +56,13 @@ const Bond = () => {
             version: event.target.version.value,
             location: event.target.location.value,
         };
-        await ipcRenderer.invoke("bond", mixnode);
+        const client = await ValidatorClient.connect(
+            "nym18vd8fpwxzck93qlwghaj6arh4p7c5n8974s0uv",
+            "pride moral airport someone involve rabbit else napkin cheese hello tent stove rabbit mean help small ship embark concert aim journey void fly output",
+            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
+        );
+        console.log(`connected to validator, our address is ${client.address}`);
+        await client.bond(mixnode);
     }
 
     return (
