@@ -12,6 +12,11 @@ import ValidatorClient, { coins } from 'nym-validator-client';
 import Confirmation from '../components/send-funds/Confirmation';
 import MainNav from '../components/MainNav';
 
+
+// I guess this will somehow be passed from sign in mnemonic
+const SENDER: string = "nym1c94uwnz2jwcjh0fxefqpecc2a8wugwd7u53nry"
+const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+
 const useStyles = makeStyles((theme) => ({
     appBar: {
         position: 'relative',
@@ -59,15 +64,14 @@ export interface SendFundsMsg {
 }
 
 export default function SendFunds() {
-
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <SendNymForm />;
+                return <SendNymForm address={transaction.sender}  setFormStatus={setFormStatus}/>;
             case 1:
                 return <Review {...transaction} />;
             case 2:
-                return <Confirmation />;
+                return <Confirmation inProgress={transferInProgress} amount={transaction.amount} recipient={transaction.recipient} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -78,20 +82,34 @@ export default function SendFunds() {
 
     // Here's the React state
     const [activeStep, setActiveStep] = React.useState(0);
-    const send: SendFundsMsg = { sender: "", recipient: "", amount: 0 };
+    const send: SendFundsMsg = { sender: SENDER, recipient: "", amount: 0 };
     const [transaction, setTransaction] = React.useState(send);
+    const [transferInProgress, setTransferInProgress] = React.useState(false)
+    const [formFilled, setFormFilled] = React.useState(false)
+
+    const setFormStatus = (nonEmpty: boolean) => {
+        setFormFilled(nonEmpty)
+    }
 
     const handleNext = (event) => {
         event.preventDefault();
         if (activeStep == 0) {
             console.log("activeStep is 0, handling form")
             handleForm(event);
-        }
-        if (activeStep == 1) {
+            setActiveStep(activeStep + 1);
+        } else if (activeStep == 1) {
             console.log("activeStep is 1, sending funds")
-            sendFunds(transaction);
+            setActiveStep(activeStep + 1);
+            setTransferInProgress(true)
+            console.log("starting funds transfer")
+            sendFunds(transaction).then(() => {
+                console.log("funds transfer is finished!")
+                setTransferInProgress(false)
+            });
+        } else {
+            console.log("resetting the progress")
+            setActiveStep(0)
         }
-        setActiveStep(activeStep + 1);
     };
 
     const handleBack = () => {
@@ -101,7 +119,7 @@ export default function SendFunds() {
     const handleForm = (event) => {
         event.preventDefault();
         const send: SendFundsMsg = {
-            sender: event.target.sender.value,
+            sender: SENDER,
             recipient: event.target.recipient.value,
             amount: parseInt(event.target.amount.value)
         };
@@ -112,21 +130,27 @@ export default function SendFunds() {
     const sendFunds = async (transaction: SendFundsMsg) => {
         let nym = coins(transaction.amount, "unym");
         const client = await ValidatorClient.connect(
-            "nym18vd8fpwxzck93qlwghaj6arh4p7c5n8974s0uv",
-            "pride moral airport someone involve rabbit else napkin cheese hello tent stove rabbit mean help small ship embark concert aim journey void fly output",
+            SENDER,
+            MNEMONIC,
             "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
         );
         console.log(`connected to validator, our address is ${client.address}`);
-        await client.send(transaction.sender, transaction.recipient, nym);
-        // ipcRenderer.invoke("sendFunds", transaction.sender, transaction.recipient, nym)
-        //     .then((response) => {
-        //         console.log("Transaction hash: ", response.transactionHash);
-        //         console.log("log: ", response.rawLog);
-        //         console.log("activeStep before:", activeStep);
-        //         setActiveStep(3); // I have gone full primitivist here. 
-        //         console.log("activeStep after:", activeStep);
-        //     })
-        //     .catch((err) => console.log("Err on funds send", err));
+        await client.send(client.address, transaction.recipient, nym);
+    }
+
+    const checkButtonDisabled = (): boolean => {
+        if (activeStep === 0) {
+            return !formFilled
+            // the form must be filled
+        } else if (activeStep === 1) {
+            // it should always be enabled
+            return false
+        } else if (activeStep === 2) {
+            // transfer must be completed
+            return transferInProgress
+        }
+
+        return false
     }
 
     return (
@@ -175,9 +199,10 @@ export default function SendFunds() {
                                             color="primary"
                                             type="submit"
                                             // onClick={handleNext}
+                                            disabled={checkButtonDisabled()}
                                             className={classes.button}
                                         >
-                                            {activeStep === steps.length - 2 ? 'Send' : 'Next'}
+                                            {activeStep === 1 ? 'Send' : (activeStep === steps.length - 1 ? 'Send again' : 'Next')}
                                         </Button>
                                     </div>
                                 </form>
