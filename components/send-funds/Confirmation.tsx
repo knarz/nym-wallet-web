@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import {CircularProgress} from "@material-ui/core";
 
 const payments = [
     { name: 'Card type', detail: 'Visa' },
@@ -22,21 +23,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Confirmation() {
+type ConfirmationProps = {
+    inProgress: boolean,
+    amount: number,
+    recipient: string
+}
+
+export default function Confirmation({inProgress, amount, recipient}: ConfirmationProps) {
     const classes = useStyles();
 
     return (
         <React.Fragment>
-            <Typography variant="h6" gutterBottom>
-                Funds transfer in progress...
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <Typography variant="body1" gutterBottom className={classes.listItem}>
-                        Probably we stick some kind of spinner graphic here.
+            {inProgress ? (
+                <React.Fragment>
+                    <Typography variant="h6" gutterBottom>
+                        Funds transfer in progress...
                     </Typography>
-                </Grid>
-            </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <CircularProgress />
+                    </Grid>
+                </React.Fragment>
+
+            ) : (
+                <React.Fragment>
+                    <Typography variant="h6" gutterBottom>
+                        Funds transfer was complete!
+                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="body1" gutterBottom className={classes.listItem}>
+                                Sent {amount} nym to {recipient}!
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </React.Fragment>
+            )}
         </React.Fragment>
     );
 }

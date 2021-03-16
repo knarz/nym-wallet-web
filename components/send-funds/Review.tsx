@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const Review = (parentTrans: SendFundsMsg) => {
     const classes = useStyles();
-    const [send, setSend] = useState(parentTrans)
 
     return (
         <React.Fragment>
@@ -27,9 +26,9 @@ export const Review = (parentTrans: SendFundsMsg) => {
                     <Typography variant="body1" gutterBottom className={classes.title}>
                         You are about to send
                     </Typography>
-                    <Typography variant="h6">{send.amount} nym</Typography>
+                    <Typography variant="h6">{parentTrans.amount} nym</Typography>
                     <Typography>to</Typography>
-                    <Typography variant="h6">{send.recipient}</Typography>
+                    <Typography variant="h6">{parentTrans.recipient}</Typography>
                 </Grid>
             </Grid>
         </React.Fragment>
