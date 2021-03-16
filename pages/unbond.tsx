@@ -49,8 +49,8 @@ const Unbond = () => {
     const unbond = async () => {
         console.log(`UNBONDING button pressed`);
         const client = await ValidatorClient.connect(
-            "nym18vd8fpwxzck93qlwghaj6arh4p7c5n8974s0uv",
-            "pride moral airport someone involve rabbit else napkin cheese hello tent stove rabbit mean help small ship embark concert aim journey void fly output",
+            "nym1c94uwnz2jwcjh0fxefqpecc2a8wugwd7u53nry",
+            "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink",
             "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
         );
         console.log(`connected to validator, our address is ${client.address}`);

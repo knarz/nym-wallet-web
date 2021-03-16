@@ -1,17 +1,20 @@
 import React from 'react';
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button, Grid, Paper, TextField } from '@material-ui/core';
-import { MixNode } from 'nym-validator-client/dist/types';
+import {Paper} from '@material-ui/core';
+import {MixNode} from 'nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
 import ValidatorClient from 'nym-validator-client';
+import BondMixnodeForm from "../components/bond/BondMixnodeForm";
+import Confirmation from "../components/bond/Confirmation";
+
+// I guess this will somehow be passed from sign in mnemonic
+const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
+const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            textAlign: 'center',
-            paddingTop: theme.spacing(4),
-        },
         layout: {
             width: 'auto',
             marginLeft: theme.spacing(2),
@@ -32,21 +35,18 @@ const useStyles = makeStyles((theme: Theme) =>
                 padding: theme.spacing(3),
             },
         },
-        buttons: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-        },
-        button: {
-            marginTop: theme.spacing(3),
-            marginLeft: theme.spacing(1),
-        },
     })
 );
 
 const Bond = () => {
     const classes = useStyles({});
 
+    const [bondingStarted, setBondingStarted] = React.useState(false)
+    const [bondingFinished, setBondingFinished] = React.useState(false)
+    const [bondingError, setBondingError] = React.useState(null)
+
     const bondMixnode = async (event) => {
+        setBondingStarted(true)
         event.preventDefault();
         console.log(`BOND button pressed`);
         let mixnode: MixNode = {
@@ -57,84 +57,37 @@ const Bond = () => {
             location: event.target.location.value,
         };
         const client = await ValidatorClient.connect(
-            "nym18vd8fpwxzck93qlwghaj6arh4p7c5n8974s0uv",
-            "pride moral airport someone involve rabbit else napkin cheese hello tent stove rabbit mean help small ship embark concert aim journey void fly output",
+            BONDING_CONTRACT,
+            MNEMONIC,
             "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
         );
         console.log(`connected to validator, our address is ${client.address}`);
-        await client.bond(mixnode);
+        client.bond(mixnode).then((value => {
+            // TODO: this branch will be hit even we are bonding another mix with our account
+            console.log("ok!", value)
+            setBondingFinished(true)
+        })).catch(err => {
+            setBondingError(err)
+            setBondingFinished(true)
+        })
     }
 
     return (
         <React.Fragment>
-            <MainNav />
+            <MainNav/>
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h4" align="center">
                         Bond a mixnode
                     </Typography>
-                    <form onSubmit={bondMixnode}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    id="pubkey"
-                                    name="pubkey"
-                                    label="Public key"
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    id="host"
-                                    name="host"
-                                    label="Host"
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    id="layer"
-                                    name="layer"
-                                    label="Layer"
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    id="location"
-                                    name="location"
-                                    label="Location"
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    id="version"
-                                    name="version"
-                                    label="Version"
-                                    fullWidth
-                                />
-                            </Grid>
-                        </Grid>
-                        <div className={classes.buttons}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                className={classes.button}
-                            >
-                                Bond
-                            </Button>
-                        </div>
-                    </form>
+                    {!bondingStarted ? (
+                        <BondMixnodeForm onSubmit={bondMixnode}/>
+                    ) : (
+                        <Confirmation finished={bondingFinished} error={bondingError}/>
+                    )}
                 </Paper>
             </main>
-        </React.Fragment >
+        </React.Fragment>
     );
 };
 
