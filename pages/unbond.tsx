@@ -1,9 +1,16 @@
 import React from 'react';
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button, Grid, Paper } from '@material-ui/core';
+import {Paper} from '@material-ui/core';
 import ValidatorClient from 'nym-validator-client';
 import MainNav from '../components/MainNav';
+import UnbondNotice from "../components/unbond/UnbondNotice";
+import Confirmation from "../components/Confirmation";
+
+// I guess this will somehow be passed from sign in mnemonic
+const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
+const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,50 +52,53 @@ const useStyles = makeStyles((theme: Theme) =>
 const Unbond = () => {
     const classes = useStyles({});
 
+    const [unbondingStarted, setUnbondingStarted] = React.useState(false)
+    const [unbondingFinished, setUnbondingFinished] = React.useState(false)
+    const [unbondingError, setUnbondingError] = React.useState(null)
 
     const unbond = async () => {
+        setUnbondingStarted(true)
         console.log(`UNBONDING button pressed`);
         const client = await ValidatorClient.connect(
-            "nym1c94uwnz2jwcjh0fxefqpecc2a8wugwd7u53nry",
-            "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink",
+            BONDING_CONTRACT,
+            MNEMONIC,
             "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
         );
         console.log(`connected to validator, our address is ${client.address}`);
-        const result = await client.unbond();
-        console.log("Unbonding result", result);
+        client.unbond().then((value => {
+            // TODO: this branch will be hit even we are bonding another mix with our account
+            console.log("ok!", value)
+            setUnbondingFinished(true)
+        })).catch(err => {
+            setUnbondingError(err)
+            setUnbondingFinished(true)
+        })
     }
 
     return (
         <React.Fragment>
-            <MainNav />
+            <MainNav/>
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h4" align="center">
                         Unbond a mixnode
                     </Typography>
-
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <Typography gutterBottom>
-                                You can only have 1 mixnode per account. Unbond it by pressing the button below.
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <div className={classes.buttons}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            className={classes.button}
-                            onClick={unbond}
-                        >
-                            Unbond
-                        </Button>
-                    </div>
+                    {!unbondingStarted ? (
+                        <UnbondNotice onClick={unbond}/>
+                    ) : (
+                        <Confirmation
+                            finished={unbondingFinished}
+                            error={unbondingError}
+                            progressMessage="Mixnode unbonding is in progress..."
+                            successMessage="Mixnode unbonding was successful!"
+                            failureMessage="Failed to unbond the Mixnode!"
+                        />
+                    )
+                    }
                 </Paper>
 
             </main>
-        </React.Fragment >
+        </React.Fragment>
     );
 };
 
