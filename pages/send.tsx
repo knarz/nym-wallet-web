@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { Review } from '../components/send-funds/Review';
 import SendNymForm from '../components/send-funds/SendNymForm';
 import ValidatorClient, { coins } from 'nym-validator-client';
-import Confirmation from '../components/send-funds/Confirmation';
+import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 
 
@@ -71,7 +71,14 @@ export default function SendFunds() {
             case 1:
                 return <Review {...transaction} />;
             case 2:
-                return <Confirmation inProgress={transferInProgress} amount={transaction.amount} recipient={transaction.recipient} />;
+                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} nym to ${transaction.recipient}`
+                return <Confirmation
+                    finished={sendingFinished}
+                    progressMessage="Funds transfer is in progress..."
+                    successMessage={successMessage}
+                    failureMessage="Failed to complete the transfer"
+                    error={sendingError}
+                />
             default:
                 throw new Error('Unknown step');
         }
@@ -84,8 +91,12 @@ export default function SendFunds() {
     const [activeStep, setActiveStep] = React.useState(0);
     const send: SendFundsMsg = { sender: SENDER, recipient: "", amount: 0 };
     const [transaction, setTransaction] = React.useState(send);
-    const [transferInProgress, setTransferInProgress] = React.useState(false)
     const [formFilled, setFormFilled] = React.useState(false)
+
+    const [sendingStarted, setSendingStarted] = React.useState(false)
+    const [sendingFinished, setSendingFinished] = React.useState(false)
+    const [sendingError, setSendingError] = React.useState(null)
+
 
     const setFormStatus = (nonEmpty: boolean) => {
         setFormFilled(nonEmpty)
@@ -100,14 +111,22 @@ export default function SendFunds() {
         } else if (activeStep == 1) {
             console.log("activeStep is 1, sending funds")
             setActiveStep(activeStep + 1);
-            setTransferInProgress(true)
+            setSendingStarted(true)
             console.log("starting funds transfer")
             sendFunds(transaction).then(() => {
                 console.log("funds transfer is finished!")
-                setTransferInProgress(false)
+                setSendingStarted(false)
+                setSendingFinished(true)
+            }).catch(err => {
+                setSendingError(err)
+                setSendingStarted(false)
+                setSendingFinished(true)
             });
         } else {
             console.log("resetting the progress")
+            setSendingStarted(false)
+            setSendingFinished(false)
+            setSendingError(null)
             setActiveStep(0)
         }
     };
@@ -147,7 +166,7 @@ export default function SendFunds() {
             return false
         } else if (activeStep === 2) {
             // transfer must be completed
-            return transferInProgress
+            return sendingStarted
         }
 
         return false

@@ -6,6 +6,9 @@ import {Alert, AlertTitle} from '@material-ui/lab';
 
 type ConfirmationProps = {
     finished: boolean,
+    progressMessage: string,
+    successMessage: string,
+    failureMessage: string,
     error: Error,
 }
 
@@ -15,7 +18,7 @@ export default function Confirmation(props: ConfirmationProps) {
             {!props.finished ? (
                 <React.Fragment>
                     <Typography variant="h6" gutterBottom>
-                        Mixnode bonding is in progress...
+                        {props.progressMessage}
                     </Typography>
                     <Grid item xs={12} sm={6}>
                         <CircularProgress/>
@@ -25,13 +28,13 @@ export default function Confirmation(props: ConfirmationProps) {
             ) : (
                 <React.Fragment>
                     {props.error === null ? (
-                            <Alert severity="success">Mixnode bonding was successful!</Alert>
-                        ) : (
-                            <Alert severity="error">
-                                <AlertTitle>{props.error.name}</AlertTitle>
-                                <strong>failed to bond a mixnode</strong> - {props.error.message}
-                            </Alert>
-                        )
+                        <Alert severity="success">{props.successMessage}</Alert>
+                    ) : (
+                        <Alert severity="error">
+                            <AlertTitle>{props.error.name}</AlertTitle>
+                            <strong>{props.failureMessage}</strong> - {props.error.message}
+                        </Alert>
+                    )
                     }
                 </React.Fragment>
             )}
