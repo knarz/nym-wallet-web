@@ -64,7 +64,6 @@ export interface SendFundsMsg {
 }
 
 export default function SendFunds() {
-    let foo = "aa"
     const getStepContent = (step) => {
         switch (step) {
             case 0:
