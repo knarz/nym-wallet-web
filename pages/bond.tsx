@@ -6,7 +6,8 @@ import {MixNode} from 'nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
 import ValidatorClient from 'nym-validator-client';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
-import Confirmation from "../components/bond/Confirmation";
+import Confirmation from "../components/Confirmation";
+import {Alert} from "@material-ui/lab";
 
 // I guess this will somehow be passed from sign in mnemonic
 const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
@@ -83,7 +84,13 @@ const Bond = () => {
                     {!bondingStarted ? (
                         <BondMixnodeForm onSubmit={bondMixnode}/>
                     ) : (
-                        <Confirmation finished={bondingFinished} error={bondingError}/>
+                        <Confirmation
+                            finished={bondingFinished}
+                            error={bondingError}
+                            progressMessage="Mixnode bonding is in progress..."
+                            successMessage="Mixnode bonding was successful!"
+                            failureMessage="Failed to bond the Mixnode!"
+                        />
                     )}
                 </Paper>
             </main>
