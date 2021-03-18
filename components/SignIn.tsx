@@ -12,6 +12,7 @@ import {useRouter} from 'next/router';
 import ValidatorClient from "../../nym/clients/validator";
 import {BONDING_CONTRACT_ADDRESS, TEST_USER_MNEMONIC, VALIDATOR_URL} from "../pages/_app";
 import {LinearProgress} from "@material-ui/core";
+import {Alert, AlertTitle} from "@material-ui/lab";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,30 +41,50 @@ export default function SignIn() {
 
     const {client, setClient} = useContext(ValidatorClientContext)
     const [loading, setLoading] = useState(false)
+    const [clientError, setClientError] = useState(null)
 
     console.log("context client is", client);
 
-    const makeClient = async (mneomonic: string) => {
-        const client = await ValidatorClient.connect(
+    const makeClient = (mneomonic: string): Promise<boolean> => {
+        return ValidatorClient.connect(
             BONDING_CONTRACT_ADDRESS,
             mneomonic,
             VALIDATOR_URL
-        );
-        setClient(client)
-        console.log(`connected to validator, our address is ${client.address}`);
+        ).then((client) => {
+            setClient(client);
+            console.log(`connected to validator, our address is ${client.address}`);
+            return true
+        }).catch((err) => {
+            setClientError(err)
+            throw new Error("failed to create the client");
+        });
+
+    }
+
+    const failedClient = (err: Error) => {
+        return (
+            <Alert severity="error">
+                <AlertTitle>Could not create the client</AlertTitle>
+                {err.message}
+            </Alert>
+        )
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault()
         setLoading(true)
+        setClientError(null)
         let mneomonnic = event.target.mnemonic.value
         if (mneomonnic === "") {
             mneomonnic = TEST_USER_MNEMONIC
         }
         makeClient(mneomonnic).then(async () => {
+                // only push `/send` if we managed to create the client!
                 await router.push("/send")
             }
-        )
+        ).catch((_err) => {
+            setLoading(false)
+        })
     }
 
     return (
@@ -88,6 +109,8 @@ export default function SignIn() {
                         autoComplete="mnemonic"
                         autoFocus
                     />
+                    {clientError !== null && failedClient(clientError)}
+
                     {loading && <LinearProgress/>}
                     <Button
                         fullWidth
