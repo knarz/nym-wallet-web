@@ -64,7 +64,7 @@ export default function SendFunds() {
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <SendNymForm address={transaction.sender}  setFormStatus={setFormStatus}/>;
+                return <SendNymForm address={client.address || ""}  setFormStatus={setFormStatus}/>;
             case 1:
                 return <Review {...transaction} />;
             case 2:
