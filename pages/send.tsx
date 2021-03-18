@@ -85,9 +85,12 @@ export default function SendFunds() {
     const classes = useStyles();
     const {client} = useContext(ValidatorClientContext)
 
+    console.log("client in send", client)
+
+
     // Here's the React state
     const [activeStep, setActiveStep] = React.useState(0);
-    const send: SendFundsMsg = { sender: client.address, recipient: "", amount: 0 };
+    const send: SendFundsMsg = { sender: "", recipient: "", amount: 0 };
     const [transaction, setTransaction] = React.useState(send);
     const [formFilled, setFormFilled] = React.useState(false)
 
@@ -205,7 +208,6 @@ export default function SendFunds() {
                                         variant="contained"
                                         color="primary"
                                         type="submit"
-                                        // onClick={handleNext}
                                         disabled={checkButtonDisabled()}
                                         className={classes.button}
                                     >

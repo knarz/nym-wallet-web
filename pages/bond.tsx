@@ -4,11 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import {Paper} from '@material-ui/core';
 import {MixNode} from 'nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
-import ValidatorClient from 'nym-validator-client';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import Confirmation from "../components/Confirmation";
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
-import {Alert, AlertTitle} from "@material-ui/lab";
 import NoClientError from "../components/NoClientError";
 
 const useStyles = makeStyles((theme: Theme) =>

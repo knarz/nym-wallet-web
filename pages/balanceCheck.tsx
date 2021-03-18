@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import MainNav from "../components/MainNav";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -7,10 +7,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import ValidatorClient from "../../nym/clients/validator";
 import Confirmation from "../components/Confirmation";
 import RefreshIcon from "@material-ui/icons/Refresh"
-
-// I guess this will somehow be passed from sign in mnemonic
-const SENDER: string = "nym1c94uwnz2jwcjh0fxefqpecc2a8wugwd7u53nry"
-const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import NoClientError from "../components/NoClientError";
+import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -50,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
 export default function CheckBalance() {
     const classes = useStyles();
 
+    const {client} = useContext(ValidatorClientContext)
+
     useEffect(() => {
         const updateBalance = async () => {
             await getBalance()
@@ -66,13 +67,10 @@ export default function CheckBalance() {
     const getBalance = async () => {
         setBalanceCheckFinished(false)
         setBalanceCheckStarted(true)
-        const client = await ValidatorClient.connect(
-            SENDER,
-            MNEMONIC,
-            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
-        );
-        console.log(`connected to validator, our address is ${client.address}`);
-        client.getBalance(SENDER).then(value => {
+
+        console.log(`using the context client, our address is ${client.address}`);
+
+        client.getBalance(client.address).then(value => {
             setAccountBalance(value.amount)
             setAccountBalanceDenom(value.denom)
             setBalanceCheckFinished(true)
@@ -92,28 +90,35 @@ export default function CheckBalance() {
                     <Typography component="h1" variant="h4" align="center">
                         Check Balance
                     </Typography>
-                    <React.Fragment>
-                        <Confirmation
-                            finished={balanceCheckFinished}
-                            error={balanceCheckError}
-                            progressMessage="Checking balance..."
-                            successMessage={balanceMessage}
-                            failureMessage="Failed to check the account balance!"
-                        />
-                        <div className={classes.buttons}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                onClick={getBalance}
-                                disabled={!balanceCheckFinished}
-                                className={classes.button}
-                                startIcon={<RefreshIcon />}
-                            >
-                                Refresh
-                            </Button>
-                        </div>
-                    </React.Fragment>
+
+                    {client === null ?
+                        (
+                            <NoClientError />
+                        ) : (
+                            <React.Fragment>
+                                <Confirmation
+                                    finished={balanceCheckFinished}
+                                    error={balanceCheckError}
+                                    progressMessage="Checking balance..."
+                                    successMessage={balanceMessage}
+                                    failureMessage="Failed to check the account balance!"
+                                />
+                                <div className={classes.buttons}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        onClick={getBalance}
+                                        disabled={!balanceCheckFinished}
+                                        className={classes.button}
+                                        startIcon={<RefreshIcon />}
+                                    >
+                                        Refresh
+                                    </Button>
+                                </div>
+                            </React.Fragment>
+                        )
+                    }
                 </Paper>
             </main>
         </React.Fragment >
