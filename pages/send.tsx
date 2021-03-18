@@ -12,6 +12,7 @@ import ValidatorClient, { coins } from 'nym-validator-client';
 import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import NoClientError from "../components/NoClientError";
 
 
 // I guess this will somehow be passed from sign in mnemonic
@@ -97,7 +98,7 @@ export default function SendFunds() {
     const [sendingStarted, setSendingStarted] = React.useState(false)
     const [sendingFinished, setSendingFinished] = React.useState(false)
     const [sendingError, setSendingError] = React.useState(null)
-    
+
     const {client} = useContext(ValidatorClientContext)
 
     const setFormStatus = (nonEmpty: boolean) => {
@@ -169,6 +170,61 @@ export default function SendFunds() {
         return false
     }
 
+    const getStepperContent = () => {
+        return (
+            <React.Fragment>
+                <Stepper activeStep={activeStep} className={classes.stepper}>
+                    {steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+                <React.Fragment>
+                    {activeStep === steps.length ? (
+                        <React.Fragment>
+                            <Typography variant="h5" gutterBottom>
+                                Payment complete.
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                You (<b>{transaction.sender}</b>)
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                have sent <b>{transaction.amount} nym</b>
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                to <b>{transaction.recipient}</b>.
+                            </Typography>
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                            <form onSubmit={handleNext}>
+                                {getStepContent(activeStep)}
+                                <div className={classes.buttons}>
+                                    {activeStep !== 0 && (
+                                        <Button onClick={handleBack} className={classes.button}>
+                                            Back
+                                        </Button>
+                                    )}
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        // onClick={handleNext}
+                                        disabled={checkButtonDisabled()}
+                                        className={classes.button}
+                                    >
+                                        {activeStep === 1 ? 'Send' : (activeStep === steps.length - 1 ? 'Send again' : 'Next')}
+                                    </Button>
+                                </div>
+                            </form>
+                        </React.Fragment>
+                    )}
+                </React.Fragment>
+            </React.Fragment>
+        )
+    }
+
     return (
         <React.Fragment>
             <MainNav />
@@ -177,54 +233,12 @@ export default function SendFunds() {
                     <Typography component="h1" variant="h4" align="center">
                         Send Nym
                     </Typography>
-                    <Stepper activeStep={activeStep} className={classes.stepper}>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                    <React.Fragment>
-                        {activeStep === steps.length ? (
-                            <React.Fragment>
-                                <Typography variant="h5" gutterBottom>
-                                    Payment complete.
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    You (<b>{transaction.sender}</b>)
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    have sent <b>{transaction.amount} nym</b>
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    to <b>{transaction.recipient}</b>.
-                                </Typography>
-                            </React.Fragment>
-                        ) : (
-                            <React.Fragment>
-                                <form onSubmit={handleNext}>
-                                    {getStepContent(activeStep)}
-                                    <div className={classes.buttons}>
-                                        {activeStep !== 0 && (
-                                            <Button onClick={handleBack} className={classes.button}>
-                                                Back
-                                            </Button>
-                                        )}
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            type="submit"
-                                            // onClick={handleNext}
-                                            disabled={checkButtonDisabled()}
-                                            className={classes.button}
-                                        >
-                                            {activeStep === 1 ? 'Send' : (activeStep === steps.length - 1 ? 'Send again' : 'Next')}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </React.Fragment>
-                        )}
-                    </React.Fragment>
+
+                    {client === null ? (
+                        <NoClientError />
+                    ) : (
+                        getStepperContent()
+                    )}
                 </Paper>
             </main>
         </React.Fragment >

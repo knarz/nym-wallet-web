@@ -7,6 +7,9 @@ import MainNav from '../components/MainNav';
 import UnbondNotice from "../components/unbond/UnbondNotice";
 import Confirmation from "../components/Confirmation";
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import {Alert, AlertTitle} from "@material-ui/lab";
+import BondMixnodeForm from "../components/bond/BondMixnodeForm";
+import NoClientError from "../components/NoClientError";
 
 // I guess this will somehow be passed from sign in mnemonic
 const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
@@ -80,17 +83,23 @@ const Unbond = () => {
                     <Typography component="h1" variant="h4" align="center">
                         Unbond a mixnode
                     </Typography>
-                    {!unbondingStarted ? (
-                        <UnbondNotice onClick={unbond}/>
-                    ) : (
-                        <Confirmation
-                            finished={unbondingFinished}
-                            error={unbondingError}
-                            progressMessage="Mixnode unbonding is in progress..."
-                            successMessage="Mixnode unbonding was successful!"
-                            failureMessage="Failed to unbond the Mixnode!"
-                        />
-                    )
+
+                    {client === null ?
+                        (
+                            <NoClientError />
+                        ) : (
+                            !unbondingStarted ? (
+                                <UnbondNotice onClick={unbond}/>
+                            ) : (
+                                <Confirmation
+                                    finished={unbondingFinished}
+                                    error={unbondingError}
+                                    progressMessage="Mixnode unbonding is in progress..."
+                                    successMessage="Mixnode unbonding was successful!"
+                                    failureMessage="Failed to unbond the Mixnode!"
+                                />
+                            )
+                        )
                     }
                 </Paper>
 

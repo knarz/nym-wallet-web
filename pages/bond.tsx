@@ -7,8 +7,9 @@ import MainNav from '../components/MainNav';
 import ValidatorClient from 'nym-validator-client';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import Confirmation from "../components/Confirmation";
-import {Alert} from "@material-ui/lab";
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import {Alert, AlertTitle} from "@material-ui/lab";
+import NoClientError from "../components/NoClientError";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,17 +75,24 @@ const Bond = () => {
                     <Typography component="h1" variant="h4" align="center">
                         Bond a mixnode
                     </Typography>
-                    {!bondingStarted ? (
-                        <BondMixnodeForm onSubmit={bondMixnode}/>
-                    ) : (
-                        <Confirmation
-                            finished={bondingFinished}
-                            error={bondingError}
-                            progressMessage="Mixnode bonding is in progress..."
-                            successMessage="Mixnode bonding was successful!"
-                            failureMessage="Failed to bond the Mixnode!"
-                        />
-                    )}
+
+                    {client === null ?
+                        (
+                            <NoClientError />
+                        ) : (
+                            !bondingStarted ? (
+                                <BondMixnodeForm onSubmit={bondMixnode}/>
+                            ) : (
+                                <Confirmation
+                                    finished={bondingFinished}
+                                    error={bondingError}
+                                    progressMessage="Mixnode bonding is in progress..."
+                                    successMessage="Mixnode bonding was successful!"
+                                    failureMessage="Failed to bond the Mixnode!"
+                                />
+                            )
+                        )
+                    }
                 </Paper>
             </main>
         </React.Fragment>
