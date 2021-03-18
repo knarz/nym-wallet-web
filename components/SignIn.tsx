@@ -1,20 +1,17 @@
-import React, {useContext} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useContext, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
-import Router , {useRouter}  from 'next/router';
+import {useRouter} from 'next/router';
 import ValidatorClient from "../../nym/clients/validator";
 import {BONDING_CONTRACT_ADDRESS, TEST_USER_MNEMONIC, VALIDATOR_URL} from "../pages/_app";
+import {LinearProgress} from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +39,8 @@ export default function SignIn() {
     const router = useRouter()
 
     const {client, setClient} = useContext(ValidatorClientContext)
+    const [loading, setLoading] = useState(false)
+
     console.log("context client is", client);
 
     const makeClient = async (mneomonic: string) => {
@@ -56,8 +55,9 @@ export default function SignIn() {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+        setLoading(true)
         let mneomonnic = event.target.mnemonic.value
-        if (mneomonnic === ""){
+        if (mneomonnic === "") {
             mneomonnic = TEST_USER_MNEMONIC
         }
         makeClient(mneomonnic).then(async () => {
@@ -68,7 +68,7 @@ export default function SignIn() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 {/* <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -88,18 +88,17 @@ export default function SignIn() {
                         autoComplete="mnemonic"
                         autoFocus
                     />
-                    {/*<a href="/send">*/}
-                        <Button
-                            // type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            className={classes.submit}
-                        >
-                            Sign In
+                    {loading && <LinearProgress/>}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        className={classes.submit}
+                        disabled={loading}
+                    >
+                        Sign In
                     </Button>
-                    {/*</a>*/}
                     <Grid container>
                         <Grid item>
                             <Link href="#" variant="body2">
