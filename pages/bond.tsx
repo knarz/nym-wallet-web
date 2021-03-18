@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Paper} from '@material-ui/core';
@@ -8,11 +8,7 @@ import ValidatorClient from 'nym-validator-client';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import Confirmation from "../components/Confirmation";
 import {Alert} from "@material-ui/lab";
-
-// I guess this will somehow be passed from sign in mnemonic
-const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
-const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
-
+import {ValidatorClientContext} from "../contexts/ValidatorClient";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,6 +42,8 @@ const Bond = () => {
     const [bondingFinished, setBondingFinished] = React.useState(false)
     const [bondingError, setBondingError] = React.useState(null)
 
+    const {client} = useContext(ValidatorClientContext)
+
     const bondMixnode = async (event) => {
         setBondingStarted(true)
         event.preventDefault();
@@ -57,12 +55,7 @@ const Bond = () => {
             version: event.target.version.value,
             location: event.target.location.value,
         };
-        const client = await ValidatorClient.connect(
-            BONDING_CONTRACT,
-            MNEMONIC,
-            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
-        );
-        console.log(`connected to validator, our address is ${client.address}`);
+        console.log(`using the context client, our address is ${client.address}`);
         client.bond(mixnode).then((value => {
             // TODO: this branch will be hit even we are bonding another mix with our account
             console.log("ok!", value)

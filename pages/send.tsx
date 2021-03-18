@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -11,6 +11,7 @@ import SendNymForm from '../components/send-funds/SendNymForm';
 import ValidatorClient, { coins } from 'nym-validator-client';
 import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
+import {ValidatorClientContext} from "../contexts/ValidatorClient";
 
 
 // I guess this will somehow be passed from sign in mnemonic
@@ -96,7 +97,8 @@ export default function SendFunds() {
     const [sendingStarted, setSendingStarted] = React.useState(false)
     const [sendingFinished, setSendingFinished] = React.useState(false)
     const [sendingError, setSendingError] = React.useState(null)
-
+    
+    const {client} = useContext(ValidatorClientContext)
 
     const setFormStatus = (nonEmpty: boolean) => {
         setFormFilled(nonEmpty)
@@ -148,12 +150,7 @@ export default function SendFunds() {
 
     const sendFunds = async (transaction: SendFundsMsg) => {
         let nym = coins(transaction.amount, "unym");
-        const client = await ValidatorClient.connect(
-            SENDER,
-            MNEMONIC,
-            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
-        );
-        console.log(`connected to validator, our address is ${client.address}`);
+        console.log(`using the context client, our address is ${client.address}`);
         await client.send(client.address, transaction.recipient, nym);
     }
 
