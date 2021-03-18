@@ -50,7 +50,8 @@ const Bond = () => {
         event.preventDefault();
         console.log(`BOND button pressed`);
         let mixnode: MixNode = {
-            sphinx_key: event.target.pubkey.value,
+            sphinx_key: event.target.sphinxkey.value,
+            identity_key: event.target.identity.value,
             host: event.target.host.value,
             layer: parseInt(event.target.layer.value),
             version: event.target.version.value,

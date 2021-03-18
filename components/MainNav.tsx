@@ -48,6 +48,13 @@ export default function MainNav() {
                     <Typography variant="h6" color="inherit" noWrap>
                         Nym
                     </Typography>
+                    <a href="/balanceCheck">
+                        <IconButton color="inherit">
+                            <Typography variant="button" color="inherit" noWrap>
+                                Check Balance
+                            </Typography>
+                        </IconButton>
+                    </a>
                     <a href="/send">
                         <IconButton color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
