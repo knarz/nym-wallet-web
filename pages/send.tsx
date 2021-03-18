@@ -14,11 +14,6 @@ import MainNav from '../components/MainNav';
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 
-
-// I guess this will somehow be passed from sign in mnemonic
-const SENDER: string = "nym1c94uwnz2jwcjh0fxefqpecc2a8wugwd7u53nry"
-const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
-
 const useStyles = makeStyles((theme) => ({
     appBar: {
         position: 'relative',
@@ -88,10 +83,11 @@ export default function SendFunds() {
 
 
     const classes = useStyles();
+    const {client} = useContext(ValidatorClientContext)
 
     // Here's the React state
     const [activeStep, setActiveStep] = React.useState(0);
-    const send: SendFundsMsg = { sender: SENDER, recipient: "", amount: 0 };
+    const send: SendFundsMsg = { sender: client.address, recipient: "", amount: 0 };
     const [transaction, setTransaction] = React.useState(send);
     const [formFilled, setFormFilled] = React.useState(false)
 
@@ -99,7 +95,6 @@ export default function SendFunds() {
     const [sendingFinished, setSendingFinished] = React.useState(false)
     const [sendingError, setSendingError] = React.useState(null)
 
-    const {client} = useContext(ValidatorClientContext)
 
     const setFormStatus = (nonEmpty: boolean) => {
         setFormFilled(nonEmpty)
@@ -141,7 +136,7 @@ export default function SendFunds() {
     const handleForm = (event) => {
         event.preventDefault();
         const send: SendFundsMsg = {
-            sender: SENDER,
+            sender: client.address,
             recipient: event.target.recipient.value,
             amount: parseInt(event.target.amount.value)
         };
