@@ -53,7 +53,9 @@ export default function CheckBalance() {
 
     useEffect(() => {
         const updateBalance = async () => {
-            await getBalance()
+            if (client !== null) {
+                await getBalance()
+            }
         }
         updateBalance()
     }, [])
