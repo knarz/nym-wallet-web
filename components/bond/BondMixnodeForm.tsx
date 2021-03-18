@@ -30,9 +30,18 @@ export default function BondMixnodeForm(props: BondMixnodeFormProps) {
                 <Grid item xs={12}>
                     <TextField
                         required
-                        id="pubkey"
-                        name="pubkey"
-                        label="Public key"
+                        id="identity"
+                        name="identity"
+                        label="Identity key"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="sphinxkey"
+                        name="sphinxkey"
+                        label="Sphinx key"
                         fullWidth
                     />
                 </Grid>
