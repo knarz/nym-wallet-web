@@ -1,17 +1,18 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useContext, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import {useRouter} from 'next/router';
+import ValidatorClient from "../../nym/clients/validator";
+import {BONDING_CONTRACT_ADDRESS, TEST_USER_MNEMONIC, VALIDATOR_URL} from "../pages/_app";
+import {LinearProgress} from "@material-ui/core";
+import {Alert, AlertTitle} from "@material-ui/lab";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +37,59 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
     const classes = useStyles();
+    const router = useRouter()
+
+    const {client, setClient} = useContext(ValidatorClientContext)
+    const [loading, setLoading] = useState(false)
+    const [clientError, setClientError] = useState(null)
+
+    console.log("context client is", client);
+
+    const makeClient = (mneomonic: string): Promise<boolean> => {
+        return ValidatorClient.connect(
+            BONDING_CONTRACT_ADDRESS,
+            mneomonic,
+            VALIDATOR_URL
+        ).then((client) => {
+            setClient(client);
+            console.log(`connected to validator, our address is ${client.address}`);
+            return true
+        }).catch((err) => {
+            setClientError(err)
+            throw new Error("failed to create the client");
+        });
+
+    }
+
+    const failedClient = (err: Error) => {
+        return (
+            <Alert severity="error">
+                <AlertTitle>Could not create the client</AlertTitle>
+                {err.message}
+            </Alert>
+        )
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        setLoading(true)
+        setClientError(null)
+        let mneomonnic = event.target.mnemonic.value
+        if (mneomonnic === "") {
+            mneomonnic = TEST_USER_MNEMONIC
+        }
+        makeClient(mneomonnic).then(async () => {
+                // only push `/send` if we managed to create the client!
+                await router.push("/send")
+            }
+        ).catch((_err) => {
+            setLoading(false)
+        })
+    }
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 {/* <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -47,7 +97,7 @@ export default function SignIn() {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} noValidate onSubmit={handleSubmit}>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -59,18 +109,19 @@ export default function SignIn() {
                         autoComplete="mnemonic"
                         autoFocus
                     />
-                    <a href="/send">
-                        <Button
-                            // type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
+                    {clientError !== null && failedClient(clientError)}
 
-                        >
-                            Sign In
+                    {loading && <LinearProgress/>}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        className={classes.submit}
+                        disabled={loading}
+                    >
+                        Sign In
                     </Button>
-                    </a>
                     <Grid container>
                         <Grid item>
                             <Link href="#" variant="body2">

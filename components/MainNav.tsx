@@ -1,5 +1,6 @@
 import { AppBar, CssBaseline, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core";
 import React from "react";
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -48,34 +49,34 @@ export default function MainNav() {
                     <Typography variant="h6" color="inherit" noWrap>
                         Nym
                     </Typography>
-                    <a href="/balanceCheck">
+                    <Link href="/balanceCheck">
                         <IconButton color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Check Balance
                             </Typography>
                         </IconButton>
-                    </a>
-                    <a href="/send">
+                    </Link>
+                    <Link href="/send">
                         <IconButton color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Send
                             </Typography>
                         </IconButton>
-                    </a>
-                    <a href="/bond">
+                    </Link>
+                    <Link href="/bond">
                         <IconButton color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Bond
                             </Typography>
                         </IconButton>
-                    </a>
-                    <a href="/unbond">
+                    </Link>
+                    <Link href="/unbond">
                         <IconButton color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Unbond
                             </Typography>
                         </IconButton>
-                    </a>
+                    </Link>
                 </Toolbar>
             </AppBar>
         </React.Fragment>

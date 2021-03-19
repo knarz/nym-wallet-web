@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Paper} from '@material-ui/core';
@@ -6,6 +6,10 @@ import ValidatorClient from 'nym-validator-client';
 import MainNav from '../components/MainNav';
 import UnbondNotice from "../components/unbond/UnbondNotice";
 import Confirmation from "../components/Confirmation";
+import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import {Alert, AlertTitle} from "@material-ui/lab";
+import BondMixnodeForm from "../components/bond/BondMixnodeForm";
+import NoClientError from "../components/NoClientError";
 
 // I guess this will somehow be passed from sign in mnemonic
 const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
@@ -55,16 +59,12 @@ const Unbond = () => {
     const [unbondingStarted, setUnbondingStarted] = React.useState(false)
     const [unbondingFinished, setUnbondingFinished] = React.useState(false)
     const [unbondingError, setUnbondingError] = React.useState(null)
+    const {client} = useContext(ValidatorClientContext)
 
     const unbond = async () => {
         setUnbondingStarted(true)
         console.log(`UNBONDING button pressed`);
-        const client = await ValidatorClient.connect(
-            BONDING_CONTRACT,
-            MNEMONIC,
-            "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
-        );
-        console.log(`connected to validator, our address is ${client.address}`);
+        console.log(`using the context client, our address is ${client.address}`);
         client.unbond().then((value => {
             // TODO: this branch will be hit even we are bonding another mix with our account
             console.log("ok!", value)
@@ -83,17 +83,23 @@ const Unbond = () => {
                     <Typography component="h1" variant="h4" align="center">
                         Unbond a mixnode
                     </Typography>
-                    {!unbondingStarted ? (
-                        <UnbondNotice onClick={unbond}/>
-                    ) : (
-                        <Confirmation
-                            finished={unbondingFinished}
-                            error={unbondingError}
-                            progressMessage="Mixnode unbonding is in progress..."
-                            successMessage="Mixnode unbonding was successful!"
-                            failureMessage="Failed to unbond the Mixnode!"
-                        />
-                    )
+
+                    {client === null ?
+                        (
+                            <NoClientError />
+                        ) : (
+                            !unbondingStarted ? (
+                                <UnbondNotice onClick={unbond}/>
+                            ) : (
+                                <Confirmation
+                                    finished={unbondingFinished}
+                                    error={unbondingError}
+                                    progressMessage="Mixnode unbonding is in progress..."
+                                    successMessage="Mixnode unbonding was successful!"
+                                    failureMessage="Failed to unbond the Mixnode!"
+                                />
+                            )
+                        )
                     }
                 </Paper>
 
