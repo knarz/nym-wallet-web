@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -11,8 +11,9 @@ import SendNymForm from '../components/send-funds/SendNymForm';
 import ValidatorClient, { coins } from 'nym-validator-client';
 import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
-import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
+import { DENOM } from './_app';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -64,11 +65,11 @@ export default function SendFunds() {
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <SendNymForm address={client.address || ""}  setFormStatus={setFormStatus}/>;
+                return <SendNymForm address={client.address || ""} setFormStatus={setFormStatus} />;
             case 1:
                 return <Review {...transaction} />;
             case 2:
-                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} nym to ${transaction.recipient}`
+                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} ${DENOM} to ${transaction.recipient}`
                 return <Confirmation
                     finished={sendingFinished}
                     progressMessage="Funds transfer is in progress..."
@@ -83,7 +84,7 @@ export default function SendFunds() {
 
 
     const classes = useStyles();
-    const {client} = useContext(ValidatorClientContext)
+    const { client } = useContext(ValidatorClientContext)
 
     console.log("client in send", client)
 
@@ -148,7 +149,7 @@ export default function SendFunds() {
     }
 
     const sendFunds = async (transaction: SendFundsMsg) => {
-        let nym = coins(transaction.amount, "unym");
+        let nym = coins(transaction.amount, DENOM);
         console.log(`using the context client, our address is ${client.address}`);
         await client.send(client.address, transaction.recipient, nym);
     }

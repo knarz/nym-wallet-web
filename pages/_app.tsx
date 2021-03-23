@@ -10,6 +10,7 @@ import {ValidatorClientContext} from "../contexts/ValidatorClient";
 export const BONDING_CONTRACT_ADDRESS: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
 export const VALIDATOR_URL: string = "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
 export const TEST_USER_MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+export const DENOM: string = "uhal";
 
 export default function Application(props: AppProps) {
     const {Component, pageProps} = props;

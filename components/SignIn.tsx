@@ -13,6 +13,7 @@ import ValidatorClient from "../../nym/clients/validator";
 import {BONDING_CONTRACT_ADDRESS, TEST_USER_MNEMONIC, VALIDATOR_URL} from "../pages/_app";
 import {LinearProgress} from "@material-ui/core";
 import {Alert, AlertTitle} from "@material-ui/lab";
+import { BONDING_CONTRACT_ADDRESS, DENOM, TEST_USER_MNEMONIC, VALIDATOR_URL } from "../pages/_app";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,7 +50,8 @@ export default function SignIn() {
         return ValidatorClient.connect(
             BONDING_CONTRACT_ADDRESS,
             mneomonic,
-            VALIDATOR_URL
+            VALIDATOR_URL,
+            DENOM
         ).then((client) => {
             setClient(client);
             console.log(`connected to validator, our address is ${client.address}`);
