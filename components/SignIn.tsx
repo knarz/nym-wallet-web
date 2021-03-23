@@ -1,19 +1,18 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {ValidatorClientContext} from "../contexts/ValidatorClient";
-import {useRouter} from 'next/router';
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
+import { useRouter } from 'next/router';
 import ValidatorClient from "../../nym/clients/validator";
-import {BONDING_CONTRACT_ADDRESS, TEST_USER_MNEMONIC, VALIDATOR_URL} from "../pages/_app";
-import {LinearProgress} from "@material-ui/core";
-import {Alert, AlertTitle} from "@material-ui/lab";
 import { BONDING_CONTRACT_ADDRESS, DENOM, TEST_USER_MNEMONIC, VALIDATOR_URL } from "../pages/_app";
+import { LinearProgress } from "@material-ui/core";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +39,7 @@ export default function SignIn() {
     const classes = useStyles();
     const router = useRouter()
 
-    const {client, setClient} = useContext(ValidatorClientContext)
+    const { client, setClient } = useContext(ValidatorClientContext)
     const [loading, setLoading] = useState(false)
     const [clientError, setClientError] = useState(null)
 
@@ -81,9 +80,9 @@ export default function SignIn() {
             mneomonnic = TEST_USER_MNEMONIC
         }
         makeClient(mneomonnic).then(async () => {
-                // only push `/send` if we managed to create the client!
-                await router.push("/send")
-            }
+            // only push `/send` if we managed to create the client!
+            await router.push("/send")
+        }
         ).catch((_err) => {
             setLoading(false)
         })
@@ -91,7 +90,7 @@ export default function SignIn() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline/>
+            <CssBaseline />
             <div className={classes.paper}>
                 {/* <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -113,7 +112,7 @@ export default function SignIn() {
                     />
                     {clientError !== null && failedClient(clientError)}
 
-                    {loading && <LinearProgress/>}
+                    {loading && <LinearProgress />}
                     <Button
                         fullWidth
                         variant="contained"
