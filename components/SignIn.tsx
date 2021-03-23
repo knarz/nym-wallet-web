@@ -75,11 +75,8 @@ export default function SignIn() {
         event.preventDefault()
         setLoading(true)
         setClientError(null)
-        let mneomonnic = event.target.mnemonic.value
-        if (mneomonnic === "") {
-            mneomonnic = TEST_USER_MNEMONIC
-        }
-        makeClient(mneomonnic).then(async () => {
+        let mnemonic = event.target.mnemonic.value
+        makeClient(mnemonic).then(async () => {
             // only push `/send` if we managed to create the client!
             await router.push("/send")
         }
