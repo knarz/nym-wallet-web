@@ -45,10 +45,10 @@ export default function SignIn() {
 
     console.log("context client is", client);
 
-    const makeClient = (mneomonic: string): Promise<boolean> => {
+    const makeClient = (mnemonic: string): Promise<boolean> => {
         return ValidatorClient.connect(
             BONDING_CONTRACT_ADDRESS,
-            mneomonic,
+            mnemonic,
             VALIDATOR_URL,
             DENOM
         ).then((client) => {
