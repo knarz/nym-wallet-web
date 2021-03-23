@@ -5,9 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import ValidatorClient from "../../nym/clients/validator";
-import {IconButton, LinearProgress} from "@material-ui/core";
-import Link from "next/link";
-import {TEST_USER_MNEMONIC} from "./_app";
+import {LinearProgress} from "@material-ui/core";
 import {useRouter} from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
