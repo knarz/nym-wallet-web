@@ -1,18 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import {ThemeProvider} from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {theme} from '../lib/theme';
-import type {AppProps} from 'next/app';
-import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import { theme } from '../lib/theme';
+import type { AppProps } from 'next/app';
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
 
 // TODO: should it perhaps be pulled from some config or also user provided?
-export const BONDING_CONTRACT_ADDRESS: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
-export const VALIDATOR_URL: string = "http://foo.bar.org:26657" // this parameter in the client needs to be hooked up.
+export const BONDING_CONTRACT_ADDRESS: string = "hal10pyejy66429refv3g35g2t7am0was7yam2dd72";
+export const VALIDATOR_URL: string = "http://testnet-finney-validator.nymtech.net:26657";
 export const TEST_USER_MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
+export const DENOM: string = "uhal";
+
 
 export default function Application(props: AppProps) {
-    const {Component, pageProps} = props;
+    const { Component, pageProps } = props;
 
     const [client, setClient] = useState(null)
 
@@ -26,13 +28,13 @@ export default function Application(props: AppProps) {
     return (
         <React.Fragment>
             <Head>
-                <meta charSet="utf-8"/>
-                <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
                 <title>Nym</title>
             </Head>
-            <ValidatorClientContext.Provider value={{client, setClient}}>
+            <ValidatorClientContext.Provider value={{ client, setClient }}>
                 <ThemeProvider theme={theme}>
-                    <CssBaseline/>
+                    <CssBaseline />
                     <Component {...pageProps} />
                 </ThemeProvider>
             </ValidatorClientContext.Provider>
