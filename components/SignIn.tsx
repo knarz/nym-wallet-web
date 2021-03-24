@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import { useRouter } from 'next/router';
 import ValidatorClient from "../../nym/clients/validator";
-import { BONDING_CONTRACT_ADDRESS, DENOM, TEST_USER_MNEMONIC, VALIDATOR_URL } from "../pages/_app";
+import { BONDING_CONTRACT_ADDRESS, DENOM, VALIDATOR_URL } from "../pages/_app";
 import { LinearProgress } from "@material-ui/core";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
@@ -75,11 +75,8 @@ export default function SignIn() {
         event.preventDefault()
         setLoading(true)
         setClientError(null)
-        let mneomonnic = event.target.mnemonic.value
-        if (mneomonnic === "") {
-            mneomonnic = TEST_USER_MNEMONIC
-        }
-        makeClient(mneomonnic).then(async () => {
+        let mnemonic = event.target.mnemonic.value
+        makeClient(mnemonic).then(async () => {
             // only push `/send` if we managed to create the client!
             await router.push("/send")
         }
