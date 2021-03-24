@@ -1,12 +1,12 @@
-import React, {useContext, useEffect} from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React, { useContext, useEffect } from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {Paper} from '@material-ui/core';
-import {MixNode} from 'nym-validator-client/dist/types';
+import { Paper } from '@material-ui/core';
+import { MixNode } from '@nymproject/nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import Confirmation from "../components/Confirmation";
-import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
 
@@ -38,13 +38,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const Bond = () => {
     const classes = useStyles({});
     const router = useRouter()
-    const {client} = useContext(ValidatorClientContext)
+    const { client } = useContext(ValidatorClientContext)
 
     const [bondingStarted, setBondingStarted] = React.useState(false)
     const [bondingFinished, setBondingFinished] = React.useState(false)
     const [bondingError, setBondingError] = React.useState(null)
 
-    useEffect(() =>  {
+    useEffect(() => {
         if (client === null) {
             router.push("/")
         }
@@ -75,7 +75,7 @@ const Bond = () => {
 
     return (
         <React.Fragment>
-            <MainNav/>
+            <MainNav />
             <main className={classes.layout}>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h4" align="center">
@@ -87,7 +87,7 @@ const Bond = () => {
                             <NoClientError />
                         ) : (
                             !bondingStarted ? (
-                                <BondMixnodeForm onSubmit={bondMixnode}/>
+                                <BondMixnodeForm onSubmit={bondMixnode} />
                             ) : (
                                 <Confirmation
                                     finished={bondingFinished}
