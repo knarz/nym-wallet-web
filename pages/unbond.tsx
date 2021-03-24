@@ -1,20 +1,13 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Paper} from '@material-ui/core';
-import ValidatorClient from 'nym-validator-client';
 import MainNav from '../components/MainNav';
 import UnbondNotice from "../components/unbond/UnbondNotice";
 import Confirmation from "../components/Confirmation";
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
-import {Alert, AlertTitle} from "@material-ui/lab";
-import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import NoClientError from "../components/NoClientError";
-
-// I guess this will somehow be passed from sign in mnemonic
-const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
-const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
-
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,11 +48,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Unbond = () => {
     const classes = useStyles({});
+    const router = useRouter()
 
     const [unbondingStarted, setUnbondingStarted] = React.useState(false)
     const [unbondingFinished, setUnbondingFinished] = React.useState(false)
     const [unbondingError, setUnbondingError] = React.useState(null)
     const {client} = useContext(ValidatorClientContext)
+
+    useEffect(() =>  {
+        if (client === null) {
+            router.push("/")
+        }
+    }, [client])
 
     const unbond = async () => {
         setUnbondingStarted(true)

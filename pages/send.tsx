@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Review } from '../components/send-funds/Review';
 import SendNymForm from '../components/send-funds/SendNymForm';
-import ValidatorClient, { coins } from 'nym-validator-client';
+import { coins } from 'nym-validator-client';
 import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";

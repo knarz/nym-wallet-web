@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Paper} from '@material-ui/core';
@@ -8,6 +8,7 @@ import BondMixnodeForm from "../components/bond/BondMixnodeForm";
 import Confirmation from "../components/Confirmation";
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,12 +37,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Bond = () => {
     const classes = useStyles({});
+    const router = useRouter()
+    const {client} = useContext(ValidatorClientContext)
 
     const [bondingStarted, setBondingStarted] = React.useState(false)
     const [bondingFinished, setBondingFinished] = React.useState(false)
     const [bondingError, setBondingError] = React.useState(null)
 
-    const {client} = useContext(ValidatorClientContext)
+    useEffect(() =>  {
+        if (client === null) {
+            router.push("/")
+        }
+    }, [client])
 
     const bondMixnode = async (event) => {
         setBondingStarted(true)
