@@ -4,12 +4,11 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
-import ValidatorClient from "../../nym/clients/validator";
 import Confirmation from "../components/Confirmation";
 import RefreshIcon from "@material-ui/icons/Refresh"
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
-import BondMixnodeForm from "../components/bond/BondMixnodeForm";
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -45,20 +44,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/*
+    useEffect(() =>  {
+        if (client === null) {
+            router.push("/")
+        }
+    }, [client])
+ */
 
 export default function CheckBalance() {
     const classes = useStyles();
+    const router = useRouter()
 
     const {client} = useContext(ValidatorClientContext)
 
     useEffect(() => {
         const updateBalance = async () => {
-            if (client !== null) {
+            if (client === null) {
+                await router.push("/")
+            } else {
                 await getBalance()
             }
         }
         updateBalance()
-    }, [])
+    }, [client])
 
     const [balanceCheckStarted, setBalanceCheckStarted] = React.useState(false)
     const [balanceCheckFinished, setBalanceCheckFinished] = React.useState(false)
