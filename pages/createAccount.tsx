@@ -1,12 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import MainNav from "../components/MainNav";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import ValidatorClient from "../../nym/clients/validator";
-import {LinearProgress} from "@material-ui/core";
-import {useRouter} from 'next/router';
+import ValidatorClient from "@nymproject/nym-validator-client";
+import { LinearProgress } from "@material-ui/core";
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -118,7 +118,7 @@ export default function CreateAccount() {
                         Create new account
                     </Typography>
                     <AccountDetails mneomonic={mnemonic} address={address} />
-                    {loading && <LinearProgress/>}
+                    {loading && <LinearProgress />}
                     <div className={classes.buttons}>
                         {!created ? (
                             <Button
@@ -139,7 +139,7 @@ export default function CreateAccount() {
                                 Go back to sign in
                             </Button>
                         )
-                    }
+                        }
                     </div>
                 </Paper>
             </main>

@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import { useRouter } from 'next/router';
-import ValidatorClient from "../../nym/clients/validator";
+import ValidatorClient from "@nymproject/nym-validator-client";
 import { BONDING_CONTRACT_ADDRESS, DENOM, VALIDATOR_URL } from "../pages/_app";
 import { LinearProgress } from "@material-ui/core";
 import { Alert, AlertTitle } from "@material-ui/lab";
