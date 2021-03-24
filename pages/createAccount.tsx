@@ -96,12 +96,9 @@ export default function CreateAccount() {
         let mnemonic = ValidatorClient.randomMnemonic();
         setMnemonic(mnemonic)
 
-        // TODO: when entropy of 'randomMnemonic' is increased, make `mnemonicToAddress` static
-        ValidatorClient.buildWallet(mnemonic).then((wallet) => {
-            wallet.getAccounts().then((accounts) => {
-                setAddress(accounts[0].address)
-                setCreated(true)
-            })
+        ValidatorClient.mnemonicToAddress(mnemonic).then((address) => {
+            setAddress(address)
+            setCreated(true)
         })
     }
 
