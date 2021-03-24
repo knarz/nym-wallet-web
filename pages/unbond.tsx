@@ -9,11 +9,6 @@ import {ValidatorClientContext} from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import {useRouter} from "next/router";
 
-// I guess this will somehow be passed from sign in mnemonic
-const BONDING_CONTRACT: string = "nym10pyejy66429refv3g35g2t7am0was7ya69su6d"
-const MNEMONIC: string = "sunny squirrel powder gallery december sound face town possible soul bind spatial cargo limb royal mean traffic noise wage account dog badge task pink";
-
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {

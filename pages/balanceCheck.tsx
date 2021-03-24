@@ -44,14 +44,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-/*
-    useEffect(() =>  {
-        if (client === null) {
-            router.push("/")
-        }
-    }, [client])
- */
-
 export default function CheckBalance() {
     const classes = useStyles();
     const router = useRouter()
