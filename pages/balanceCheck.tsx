@@ -9,6 +9,7 @@ import RefreshIcon from "@material-ui/icons/Refresh"
 import {ValidatorClientContext} from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
+import { DENOM } from "./_app";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -74,8 +75,13 @@ export default function CheckBalance() {
         console.log(`using the context client, our address is ${client.address}`);
 
         client.getBalance(client.address).then(value => {
-            setAccountBalance(value.amount)
-            setAccountBalanceDenom(value.denom)
+            if (value === null) {
+                setAccountBalance("0")
+                setAccountBalanceDenom(DENOM)
+            } else {
+                setAccountBalance(value.amount)
+                setAccountBalanceDenom(value.denom)
+            }
             setBalanceCheckFinished(true)
         }).catch(err => {
             setBalanceCheckError(err)
