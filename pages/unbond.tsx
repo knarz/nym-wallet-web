@@ -1,7 +1,7 @@
 import React, {useContext, useEffect} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {Paper} from '@material-ui/core';
+import { Grid, LinearProgress, Paper } from '@material-ui/core';
 import MainNav from '../components/MainNav';
 import UnbondNotice from "../components/unbond/UnbondNotice";
 import Confirmation from "../components/Confirmation";
@@ -55,9 +55,17 @@ const Unbond = () => {
     const [unbondingError, setUnbondingError] = React.useState(null)
     const {client} = useContext(ValidatorClientContext)
 
+    const [checkedOwnership, setCheckedOwnership] = React.useState(false)
+    const [ownsMixnode, setOwnsMixnode] = React.useState(false)
+
     useEffect(() =>  {
         if (client === null) {
             router.push("/")
+        } else {
+            // check if we actually own a mixnode to unbond
+            client.ownsMixNode().then((ownsNode) => {
+                setOwnsMixnode(ownsNode)
+            }).finally(() => setCheckedOwnership(true))
         }
     }, [client])
 
@@ -75,6 +83,51 @@ const Unbond = () => {
         })
     }
 
+    const getUnbondContent = () => {
+        // we're not signed in
+        if (client === null) {
+            return (<NoClientError />)
+        }
+
+        // we haven't checked whether we actually own a node to unbond
+        if (!checkedOwnership) {
+            return (<LinearProgress />)
+        }
+
+        // we don't own a mixnode
+        if (!ownsMixnode) {
+            return (
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography gutterBottom>
+                            You do not currently have a mixnode bonded.
+                        </Typography>
+                    </Grid>
+                </Grid>
+            )
+        }
+
+        // we haven't clicked unbond button yet
+        if (!unbondingStarted) {
+            return (
+                <React.Fragment>
+                    <UnbondNotice onClick={unbond}/>
+                </React.Fragment>
+            )
+        }
+
+        // We started unbonding
+        return (
+            <Confirmation
+                finished={unbondingFinished}
+                error={unbondingError}
+                progressMessage="Mixnode unbonding is in progress..."
+                successMessage="Mixnode unbonding was successful!"
+                failureMessage="Failed to unbond the Mixnode!"
+            />
+        )
+    }
+
     return (
         <React.Fragment>
             <MainNav/>
@@ -84,23 +137,7 @@ const Unbond = () => {
                         Unbond a mixnode
                     </Typography>
 
-                    {client === null ?
-                        (
-                            <NoClientError />
-                        ) : (
-                            !unbondingStarted ? (
-                                <UnbondNotice onClick={unbond}/>
-                            ) : (
-                                <Confirmation
-                                    finished={unbondingFinished}
-                                    error={unbondingError}
-                                    progressMessage="Mixnode unbonding is in progress..."
-                                    successMessage="Mixnode unbonding was successful!"
-                                    failureMessage="Failed to unbond the Mixnode!"
-                                />
-                            )
-                        )
-                    }
+                    {getUnbondContent()}
                 </Paper>
 
             </main>
