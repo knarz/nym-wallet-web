@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Paper } from '@material-ui/core';
+import { Grid, LinearProgress, Paper } from '@material-ui/core';
 import { MixNode } from '@nymproject/nym-validator-client/dist/types';
 import MainNav from '../components/MainNav';
 import BondMixnodeForm from "../components/bond/BondMixnodeForm";
@@ -9,6 +9,8 @@ import Confirmation from "../components/Confirmation";
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
+import UnbondNotice from "../components/unbond/UnbondNotice";
+import Link from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,9 +46,17 @@ const Bond = () => {
     const [bondingFinished, setBondingFinished] = React.useState(false)
     const [bondingError, setBondingError] = React.useState(null)
 
+    const [checkedOwnership, setCheckedOwnership] = React.useState(false)
+    const [ownsMixnode, setOwnsMixnode] = React.useState(false)
+
     useEffect(() => {
         if (client === null) {
             router.push("/")
+        } else {
+            // check if we actually already own a mixnode
+            client.ownsMixNode().then((ownsNode) => {
+                setOwnsMixnode(ownsNode)
+            }).finally(() => setCheckedOwnership(true))
         }
     }, [client])
 
@@ -73,6 +83,49 @@ const Bond = () => {
         })
     }
 
+    const getBondContent = () => {
+        // we're not signed in
+        if (client === null) {
+            return (<NoClientError />)
+        }
+
+        // we haven't checked whether we actually already own a node
+        if (!checkedOwnership) {
+            return (<LinearProgress />)
+        }
+
+        // we already own a mixnode
+        if (ownsMixnode) {
+            return (
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography gutterBottom>
+                            You have already bonded a mixnode before. If you wish to bond a different one, you need to first <Link href="/unbond">unbond the existing one</Link>.
+                        </Typography>
+                    </Grid>
+                </Grid>
+            )
+        }
+
+        // we haven't clicked bond button yet
+        if (!bondingStarted) {
+            return (
+                <BondMixnodeForm onSubmit={bondMixnode} />
+            )
+        }
+
+        // We started bonding
+        return (
+            <Confirmation
+                finished={bondingFinished}
+                error={bondingError}
+                progressMessage="Mixnode bonding is in progress..."
+                successMessage="Mixnode bonding was successful!"
+                failureMessage="Failed to bond the Mixnode!"
+            />
+        )
+    }
+
     return (
         <React.Fragment>
             <MainNav />
@@ -81,24 +134,7 @@ const Bond = () => {
                     <Typography component="h1" variant="h4" align="center">
                         Bond a mixnode
                     </Typography>
-
-                    {client === null ?
-                        (
-                            <NoClientError />
-                        ) : (
-                            !bondingStarted ? (
-                                <BondMixnodeForm onSubmit={bondMixnode} />
-                            ) : (
-                                <Confirmation
-                                    finished={bondingFinished}
-                                    error={bondingError}
-                                    progressMessage="Mixnode bonding is in progress..."
-                                    successMessage="Mixnode bonding was successful!"
-                                    failureMessage="Failed to bond the Mixnode!"
-                                />
-                            )
-                        )
-                    }
+                    {getBondContent()}
                 </Paper>
             </main>
         </React.Fragment>
