@@ -9,7 +9,6 @@ import Confirmation from "../components/Confirmation";
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
-import UnbondNotice from "../components/unbond/UnbondNotice";
 import Link from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme: Theme) =>
