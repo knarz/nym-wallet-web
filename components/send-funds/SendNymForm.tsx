@@ -9,7 +9,7 @@ type SendNymFormProps = {
     setFormStatus: (nonEmpty: boolean) => void,
 }
 
-export default function SendNymForm({address, setFormStatus}: SendNymFormProps) {
+export default function SendNymForm({ address, setFormStatus }: SendNymFormProps) {
     const [recipientHasValue, setRecipientHasValue] = React.useState(false)
     const [amountHasValue, setAmountHasValue] = React.useState(false)
 
