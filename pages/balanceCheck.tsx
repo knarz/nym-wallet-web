@@ -1,15 +1,15 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import MainNav from "../components/MainNav";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Confirmation from "../components/Confirmation";
 import RefreshIcon from "@material-ui/icons/Refresh"
-import {ValidatorClientContext} from "../contexts/ValidatorClient";
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
-import { DENOM } from "./_app";
+import { UDENOM } from "./_app";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -49,7 +49,7 @@ export default function CheckBalance() {
     const classes = useStyles();
     const router = useRouter()
 
-    const {client} = useContext(ValidatorClientContext)
+    const { client } = useContext(ValidatorClientContext)
 
     useEffect(() => {
         const updateBalance = async () => {
@@ -77,7 +77,7 @@ export default function CheckBalance() {
         client.getBalance(client.address).then(value => {
             if (value === null) {
                 setAccountBalance("0")
-                setAccountBalanceDenom(DENOM)
+                setAccountBalanceDenom(UDENOM)
             } else {
                 setAccountBalance(value.amount)
                 setAccountBalanceDenom(value.denom)

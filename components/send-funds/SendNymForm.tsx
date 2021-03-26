@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { DENOM } from '../../pages/_app';
+import { UDENOM } from '../../pages/_app';
 
 type SendNymFormProps = {
     address: string,
@@ -51,7 +51,7 @@ export default function SendNymForm({ address, setFormStatus }: SendNymFormProps
                         label="Amount"
                         onChange={handleInputData}
                         fullWidth
-                    /> {DENOM}
+                    /> {UDENOM}
                 </Grid>
             </Grid>
         </React.Fragment>
