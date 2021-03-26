@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { SendFundsMsg } from '../../pages/send';
+import { DENOM } from "../../pages/_app";
 
 const useStyles = makeStyles((theme) => ({
     listItem: {
@@ -26,7 +27,7 @@ export const Review = (parentTrans: SendFundsMsg) => {
                     <Typography variant="body1" gutterBottom className={classes.title}>
                         You are about to send
                     </Typography>
-                    <Typography variant="h6">{parentTrans.amount} nym</Typography>
+                    <Typography variant="h6">{parentTrans.amount} {DENOM}</Typography>
                     <Typography>to</Typography>
                     <Typography variant="h6">{parentTrans.recipient}</Typography>
                 </Grid>
