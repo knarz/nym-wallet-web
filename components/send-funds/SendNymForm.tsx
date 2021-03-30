@@ -2,13 +2,14 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import { UDENOM } from '../../pages/_app';
 
 type SendNymFormProps = {
     address: string,
     setFormStatus: (nonEmpty: boolean) => void,
 }
 
-export default function SendNymForm({address, setFormStatus}: SendNymFormProps) {
+export default function SendNymForm({ address, setFormStatus }: SendNymFormProps) {
     const [recipientHasValue, setRecipientHasValue] = React.useState(false)
     const [amountHasValue, setAmountHasValue] = React.useState(false)
 
@@ -50,7 +51,7 @@ export default function SendNymForm({address, setFormStatus}: SendNymFormProps) 
                         label="Amount"
                         onChange={handleInputData}
                         fullWidth
-                    />
+                    /> {UDENOM}
                 </Grid>
             </Grid>
         </React.Fragment>

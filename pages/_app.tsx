@@ -9,7 +9,7 @@ import { ValidatorClientContext } from "../contexts/ValidatorClient";
 // TODO: should it perhaps be pulled from some config or also user provided?
 export const BONDING_CONTRACT_ADDRESS: string = "hal1sh36qn08g4cqg685cfzmyxqv2952q6r8dah9q5";
 export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
-export const DENOM: string = "uhal";
+export const UDENOM: string = "uhal";
 
 
 export default function Application(props: AppProps) {

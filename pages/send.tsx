@@ -13,7 +13,7 @@ import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
-import { DENOM } from './_app';
+import { UDENOM } from './_app';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -69,7 +69,7 @@ export default function SendFunds() {
             case 1:
                 return <Review {...transaction} />;
             case 2:
-                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} ${DENOM} to ${transaction.recipient}`
+                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} ${UDENOM} to ${transaction.recipient}`
                 return <Confirmation
                     finished={sendingFinished}
                     progressMessage="Funds transfer is in progress..."
@@ -149,7 +149,7 @@ export default function SendFunds() {
     }
 
     const sendFunds = async (transaction: SendFundsMsg) => {
-        let nym = coins(transaction.amount, DENOM);
+        let nym = coins(transaction.amount, UDENOM);
         console.log(`using the context client, our address is ${client.address}`);
         await client.send(client.address, transaction.recipient, nym);
     }
