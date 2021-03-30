@@ -5,12 +5,17 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { theme } from '../lib/theme';
 import type { AppProps } from 'next/app';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
+import { CoinMap } from "@nymproject/nym-validator-client";
 
 // TODO: should it perhaps be pulled from some config or also user provided?
 export const BONDING_CONTRACT_ADDRESS: string = "hal1sh36qn08g4cqg685cfzmyxqv2952q6r8dah9q5";
 export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
-export const UDENOM: string = "uhal";
+export const UDENOM: string = "uhal"; // required for client and coin construction
+export const DENOM: string = "hal"; // used everywhere else
 
+export const denomMap: CoinMap = {
+    [UDENOM]: { denom: DENOM, fractionalDigits: 6}
+}
 
 export default function Application(props: AppProps) {
     const { Component, pageProps } = props;

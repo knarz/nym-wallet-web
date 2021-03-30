@@ -9,7 +9,7 @@ import RefreshIcon from "@material-ui/icons/Refresh"
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { useRouter } from 'next/router';
-import { UDENOM } from "./_app";
+import { printableCoin } from "@nymproject/nym-validator-client";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -66,7 +66,6 @@ export default function CheckBalance() {
     const [balanceCheckFinished, setBalanceCheckFinished] = React.useState(false)
     const [balanceCheckError, setBalanceCheckError] = React.useState(null)
     const [accountBalance, setAccountBalance] = React.useState("")
-    const [accountBalanceDenom, setAccountBalanceDenom] = React.useState("")
 
     const getBalance = async () => {
         setBalanceCheckFinished(false)
@@ -75,13 +74,7 @@ export default function CheckBalance() {
         console.log(`using the context client, our address is ${client.address}`);
 
         client.getBalance(client.address).then(value => {
-            if (value === null) {
-                setAccountBalance("0")
-                setAccountBalanceDenom(UDENOM)
-            } else {
-                setAccountBalance(value.amount)
-                setAccountBalanceDenom(value.denom)
-            }
+            setAccountBalance(printableCoin(value))
             setBalanceCheckFinished(true)
         }).catch(err => {
             setBalanceCheckError(err)
@@ -89,7 +82,7 @@ export default function CheckBalance() {
         })
     }
 
-    const balanceMessage = `Current account balance is ${accountBalance} ${accountBalanceDenom}`
+    const balanceMessage = `Current account balance is ${accountBalance}`
 
     return (
         <React.Fragment>
