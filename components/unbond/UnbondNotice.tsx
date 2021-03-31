@@ -1,4 +1,4 @@
-import {Button, Grid, Paper} from "@material-ui/core";
+import {Button, Grid} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";

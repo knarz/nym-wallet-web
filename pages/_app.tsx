@@ -5,7 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { theme } from '../lib/theme';
 import type { AppProps } from 'next/app';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
-import { CoinMap } from "@nymproject/nym-validator-client";
 
 // TODO: should it perhaps be pulled from some config or also user provided?
 export const BONDING_CONTRACT_ADDRESS: string = "hal1sh36qn08g4cqg685cfzmyxqv2952q6r8dah9q5";
