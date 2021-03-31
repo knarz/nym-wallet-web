@@ -13,10 +13,6 @@ export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.n
 export const UDENOM: string = "uhal"; // required for client and coin construction
 export const DENOM: string = "hal"; // used everywhere else
 
-export const denomMap: CoinMap = {
-    [UDENOM]: { denom: DENOM, fractionalDigits: 6}
-}
-
 export default function Application(props: AppProps) {
     const { Component, pageProps } = props;
 

@@ -13,7 +13,8 @@ import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
-import { denomMap, UDENOM } from './_app';
+import { UDENOM } from './_app';
+import { printableBalanceToNative } from "@nymproject/nym-validator-client/dist/currency";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -145,7 +146,7 @@ export default function SendFunds() {
     };
 
     const getCoinValue = (raw: string): number => {
-        let native = displayAmountToNative(raw, denomMap, UDENOM)
+        let native = printableBalanceToNative(raw)
         return parseInt(native)
     }
 
