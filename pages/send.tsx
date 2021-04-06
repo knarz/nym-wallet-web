@@ -8,12 +8,13 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Review } from '../components/send-funds/Review';
 import SendNymForm from '../components/send-funds/SendNymForm';
-import { coins } from '@nymproject/nym-validator-client';
+import { coin, Coin, printableCoin } from '@nymproject/nym-validator-client';
 import Confirmation from '../components/Confirmation';
 import MainNav from '../components/MainNav';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import NoClientError from "../components/NoClientError";
 import { UDENOM } from './_app';
+import { printableBalanceToNative } from "@nymproject/nym-validator-client/dist/currency";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -54,11 +55,10 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Enter addresses', 'Review & send', 'Await confirmation'];
 
-
 export interface SendFundsMsg {
     sender: string,
     recipient: string,
-    amount: number,
+    coin?: Coin,
 }
 
 export default function SendFunds() {
@@ -67,9 +67,9 @@ export default function SendFunds() {
             case 0:
                 return <SendNymForm address={client.address || ""} setFormStatus={setFormStatus} />;
             case 1:
-                return <Review {...transaction} />;
+                return <Review  {...transaction}/>;
             case 2:
-                const successMessage = `Funds transfer was complete! - sent ${transaction.amount} ${UDENOM} to ${transaction.recipient}`
+                const successMessage = `Funds transfer was complete! - sent ${printableCoin(transaction.coin)} to ${transaction.recipient}`
                 return <Confirmation
                     finished={sendingFinished}
                     progressMessage="Funds transfer is in progress..."
@@ -91,7 +91,7 @@ export default function SendFunds() {
 
     // Here's the React state
     const [activeStep, setActiveStep] = React.useState(0);
-    const send: SendFundsMsg = { sender: "", recipient: "", amount: 0 };
+    const send: SendFundsMsg = { sender: "", recipient: "", coin: null };
     const [transaction, setTransaction] = React.useState(send);
     const [formFilled, setFormFilled] = React.useState(false)
 
@@ -108,8 +108,16 @@ export default function SendFunds() {
         event.preventDefault();
         if (activeStep == 0) {
             console.log("activeStep is 0, handling form")
-            handleForm(event);
-            setActiveStep(activeStep + 1);
+            try {
+                handleForm(event);
+                setActiveStep(activeStep + 1);
+            } catch (e) {
+                // right now just don't do anything.
+                // this error can be thrown when a value with more than 6 fractionalDigits is entered
+                // ideally it should show an error to the user, but it'd involve some additional
+                // work to correctly wire it to the form and I'm not sure it's worth it at this current
+                // time
+            }
         } else if (activeStep == 1) {
             console.log("activeStep is 1, sending funds")
             setActiveStep(activeStep + 1);
@@ -137,21 +145,27 @@ export default function SendFunds() {
         setActiveStep(activeStep - 1);
     };
 
+    const getCoinValue = (raw: string): number => {
+        let native = printableBalanceToNative(raw)
+        return parseInt(native)
+    }
+
     const handleForm = (event) => {
         event.preventDefault();
+        let coinValue = getCoinValue(event.target.amount.value)
+
         const send: SendFundsMsg = {
             sender: client.address,
             recipient: event.target.recipient.value,
-            amount: parseInt(event.target.amount.value)
+            coin: coin(coinValue, UDENOM)
         };
         console.log("Setting transaction", send);
         setTransaction(send);
     }
 
     const sendFunds = async (transaction: SendFundsMsg) => {
-        let nym = coins(transaction.amount, UDENOM);
         console.log(`using the context client, our address is ${client.address}`);
-        await client.send(client.address, transaction.recipient, nym);
+        await client.send(client.address, transaction.recipient, [transaction.coin]);
     }
 
     const checkButtonDisabled = (): boolean => {
@@ -189,7 +203,7 @@ export default function SendFunds() {
                                 You (<b>{transaction.sender}</b>)
                             </Typography>
                             <Typography variant="subtitle1">
-                                have sent <b>{transaction.amount} nym</b>
+                                have sent <b>{printableCoin(transaction.coin)}</b>
                             </Typography>
                             <Typography variant="subtitle1">
                                 to <b>{transaction.recipient}</b>.

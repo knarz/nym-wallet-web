@@ -9,8 +9,8 @@ import { ValidatorClientContext } from "../contexts/ValidatorClient";
 // TODO: should it perhaps be pulled from some config or also user provided?
 export const BONDING_CONTRACT_ADDRESS: string = "hal1tndcaqxkpc5ce9qee5ggqf430mr2z3pev9mf39";
 export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
-export const UDENOM: string = "uhal";
-
+export const UDENOM: string = "uhal"; // required for client and coin construction
+export const DENOM: string = "hal"; // used everywhere else
 
 export default function Application(props: AppProps) {
     const { Component, pageProps } = props;
