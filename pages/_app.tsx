@@ -7,7 +7,7 @@ import type { AppProps } from 'next/app';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 
 // TODO: should it perhaps be pulled from some config or also user provided?
-export const BONDING_CONTRACT_ADDRESS: string = "hal1sh36qn08g4cqg685cfzmyxqv2952q6r8dah9q5";
+export const BONDING_CONTRACT_ADDRESS: string = "hal1tndcaqxkpc5ce9qee5ggqf430mr2z3pev9mf39";
 export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
 export const UDENOM: string = "uhal";
 
