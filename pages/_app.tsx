@@ -11,6 +11,7 @@ export const BONDING_CONTRACT_ADDRESS: string = "hal1tndcaqxkpc5ce9qee5ggqf430mr
 export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
 export const UDENOM: string = "uhal"; // required for client and coin construction
 export const DENOM: string = "hal"; // used everywhere else
+export const ADMIN_ADDRESS: string = "hal1jsy67gee39x0ydl90dvgnq2e2cd6zx4e0xph8m"
 
 export default function Application(props: AppProps) {
     const { Component, pageProps } = props;

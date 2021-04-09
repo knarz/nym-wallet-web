@@ -1,6 +1,9 @@
-import { AppBar, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core";
-import React from "react";
+import { AppBar, Button, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core";
+import React, { useContext } from "react";
 import Link from 'next/link'
+import VpnKeyIcon from "@material-ui/icons/VpnKey"
+import { ValidatorClientContext } from "../contexts/ValidatorClient";
+import { ADMIN_ADDRESS } from "../pages/_app";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -42,6 +45,14 @@ const useStyles = makeStyles((theme) => ({
 export default function MainNav() {
     const classes = useStyles();
 
+    const { client } = useContext(ValidatorClientContext)
+
+    let adminPageDisplayed = false
+
+    if (client !== null && client.address === ADMIN_ADDRESS) {
+        adminPageDisplayed = true
+    }
+
     return (
         <React.Fragment>
             <AppBar position="absolute" color="default" className={classes.appBar}>
@@ -50,33 +61,42 @@ export default function MainNav() {
                         Nym
                     </Typography>
                     <Link href="/balanceCheck">
-                        <IconButton color="inherit">
+                        <Button color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Check Balance
                             </Typography>
-                        </IconButton>
+                        </Button>
                     </Link>
                     <Link href="/send">
-                        <IconButton color="inherit">
+                        <Button color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Send
                             </Typography>
-                        </IconButton>
+                        </Button>
                     </Link>
                     <Link href="/bond">
-                        <IconButton color="inherit">
+                        <Button color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Bond
                             </Typography>
-                        </IconButton>
+                        </Button>
                     </Link>
                     <Link href="/unbond">
-                        <IconButton color="inherit">
+                        <Button color="inherit">
                             <Typography variant="button" color="inherit" noWrap>
                                 Unbond
                             </Typography>
-                        </IconButton>
+                        </Button>
                     </Link>
+
+                    { adminPageDisplayed && <Link href="/admin">
+                        <Button color="inherit" startIcon={<VpnKeyIcon />}>
+                            <Typography variant="button" color="inherit" noWrap>
+                                Admin
+                            </Typography>
+                        </Button>
+                    </Link> }
+
                 </Toolbar>
             </AppBar>
         </React.Fragment>
