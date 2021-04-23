@@ -8,7 +8,11 @@ import { ValidatorClientContext } from "../contexts/ValidatorClient";
 
 // TODO: should it perhaps be pulled from some config or also user provided?
 export const BONDING_CONTRACT_ADDRESS: string = "hal1k0jntykt7e4g3y88ltc60czgjuqdy4c9c6gv94";
-export const VALIDATOR_URL: string = "https://testnet-finney-validator.nymtech.net";
+export const VALIDATOR_URLS: string[] = [
+    "https://testnet-finney-validator.nymtech.net",
+    "https://testnet-finney-validator2.nymtech.net",
+    "https://mixnet.club",
+];
 export const UDENOM: string = "uhal"; // required for client and coin construction
 export const DENOM: string = "hal"; // used everywhere else
 export const ADMIN_ADDRESS: string = "hal1jsy67gee39x0ydl90dvgnq2e2cd6zx4e0xph8m"

@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container';
 import { ValidatorClientContext } from "../contexts/ValidatorClient";
 import { useRouter } from 'next/router';
 import ValidatorClient from "@nymproject/nym-validator-client";
-import { BONDING_CONTRACT_ADDRESS, UDENOM, VALIDATOR_URL } from "../pages/_app";
+import { BONDING_CONTRACT_ADDRESS, UDENOM, VALIDATOR_URLS } from "../pages/_app";
 import { LinearProgress } from "@material-ui/core";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
@@ -49,11 +49,12 @@ export default function SignIn() {
         return ValidatorClient.connect(
             BONDING_CONTRACT_ADDRESS,
             mnemonic,
-            VALIDATOR_URL,
+            VALIDATOR_URLS,
             UDENOM
         ).then((client) => {
             setClient(client);
             console.log(`connected to validator, our address is ${client.address}`);
+            console.log("connected to validator", client.urls[0])
             return true
         }).catch((err) => {
             setClientError(err)
