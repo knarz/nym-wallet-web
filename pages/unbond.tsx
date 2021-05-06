@@ -73,7 +73,7 @@ const Unbond = () => {
         setUnbondingStarted(true)
         console.log(`UNBONDING button pressed`);
         console.log(`using the context client, our address is ${client.address}`);
-        client.unbond().then((value => {
+        client.unbondMixnode().then((value => {
             // TODO: this branch will be hit even we are bonding another mix with our account
             console.log("ok!", value)
             setUnbondingFinished(true)

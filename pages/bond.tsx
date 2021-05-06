@@ -72,7 +72,7 @@ const Bond = () => {
             location: event.target.location.value,
         };
         console.log(`using the context client, our address is ${client.address}`);
-        client.bond(mixnode).then((value => {
+        client.bondMixnode(mixnode).then((value => {
             // TODO: this branch will be hit even we are bonding another mix with our account
             console.log("ok!", value)
             setBondingFinished(true)
