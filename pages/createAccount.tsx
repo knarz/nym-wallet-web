@@ -44,12 +44,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 type AccountDetailsProps = {
-    mneomonic: String,
+    mnemonic: String,
     address: String
 }
 
 function AccountDetails(props: AccountDetailsProps) {
-    if (props.mneomonic === "" || props.address === "") {
+    if (props.mnemonic === "" || props.address === "") {
         return <React.Fragment />
     }
 
@@ -60,10 +60,10 @@ function AccountDetails(props: AccountDetailsProps) {
             <br />
 
             <Typography variant="h6" align="center">
-                Mneomonic
+                Mnemonic
             </Typography>
             <Typography variant="body1">
-                {props.mneomonic}
+                {props.mnemonic}
             </Typography>
             <br />
 
@@ -76,7 +76,7 @@ function AccountDetails(props: AccountDetailsProps) {
             <br />
 
             <Typography variant="body2">
-                Save your mneomonic in a safe space as it's your only way to recover your account!
+                Save your mnemonic in a safe space as it's your only way to recover your account!
             </Typography>
         </React.Fragment>
     )
@@ -117,7 +117,7 @@ export default function CreateAccount() {
                     <Typography component="h1" variant="h4" align="center">
                         Create new account
                     </Typography>
-                    <AccountDetails mneomonic={mnemonic} address={address} />
+                    <AccountDetails mnemonic={mnemonic} address={address} />
                     {loading && <LinearProgress />}
                     <div className={classes.buttons}>
                         {!created ? (
