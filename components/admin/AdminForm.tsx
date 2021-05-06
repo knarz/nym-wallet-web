@@ -23,14 +23,6 @@ type AdminFormProps = {
     currentParams: StateParams,
 }
 
-/*
-    minimum_mixnode_bond: string,
-    minimum_gateway_bond: string,
-    mixnode_bond_reward_rate: string,
-    gateway_bond_reward_rate: string,
-    mixnode_active_set_size: number,
- */
-
 export default function AdminForm(props: AdminFormProps) {
     const classes = useStyles({});
 
@@ -83,6 +75,20 @@ export default function AdminForm(props: AdminFormProps) {
                         label="Gateway Bond Reward Rate"
                         defaultValue={props.currentParams.gateway_bond_reward_rate}
                         fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="epoch_length"
+                        name="epoch_length"
+                        label="Epoch length (in hours)"
+                        defaultValue={props.currentParams.epoch_length}
+                        fullWidth
+                        InputProps={{
+                            endAdornment:
+                                <InputAdornment position="end">hours</InputAdornment>
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>

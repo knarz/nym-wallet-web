@@ -82,6 +82,7 @@ export default function Admin() {
             minimum_gateway_bond: printableBalanceToNative(event.target.gateway_bond.value),
             mixnode_bond_reward_rate: event.target.mix_reward.value,
             gateway_bond_reward_rate: event.target.gateway_reward.value,
+            epoch_length: parseInt(event.target.epoch_length.value),
             mixnode_active_set_size: parseInt(event.target.active_set.value),
         };
         setUpdatingState(true)
